@@ -4,22 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.mycomposeapplication.ui.theme.MyComposeApplicationTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
     private val viewModel: CoroutineViewModel by viewModels()
@@ -37,12 +32,14 @@ class MainActivity : ComponentActivity() {
                             items(
                                 listOf(
                                     "cancellation" to { viewModel.cancellation() },
-                                    "exception3" to { viewModel.exception3() }
+                                    "handledLaunchCEH" to { viewModel.handledLaunchCEH() },
+                                    "unhandledLaunchCEH" to { viewModel.unhandledLaunchCEH() },
+                                    "unhandledAsyncCEH" to { viewModel.unhandledAsyncCEH() },
+                                    "exposedAsyncTryCatch" to { viewModel.exposedAsyncTryCatch() },
                                 )
                             ) { item ->
                                 Button(
                                     onClick = item.second,
-                                    enabled = viewModel.enableButton.first()
                                 ) {
                                     Text(text = item.first)
                                 }
