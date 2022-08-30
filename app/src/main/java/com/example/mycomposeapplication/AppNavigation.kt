@@ -8,7 +8,19 @@ interface AppDestination {
         override val route = "${this@AppDestination.route}/${appDestination.route}"
     }
 
+    operator fun div(argument: String) = object : AppDestination {
+        override val route = "${this@AppDestination.route}/$argument"
+    }
+
+    operator fun div(argument: AppDestinationArgument) = object : AppDestination {
+        override val route = "${this@AppDestination.route}/{${argument.argument}}"
+    }
+
     val route: String
+}
+
+interface AppDestinationArgument {
+    val argument: String
 }
 
 /**
@@ -28,5 +40,8 @@ object ExceptionHandling : AppDestination {
 
 object Detail : AppDestination {
     override val route = "detail"
+}
 
+object DetailArgument: AppDestinationArgument {
+    override val argument = "detailArgument"
 }

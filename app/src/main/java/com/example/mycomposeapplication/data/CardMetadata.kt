@@ -4,6 +4,7 @@ import com.example.mycomposeapplication.AppDestination
 import com.example.mycomposeapplication.Cancellation
 import com.example.mycomposeapplication.Detail
 import com.example.mycomposeapplication.ExceptionHandling
+import com.example.mycomposeapplication.ui.detail.*
 
 data class CardMetadata(
     val title: String,
@@ -26,32 +27,32 @@ data class CardMetadata(
 
         val cancellationCards = listOf(
             CardMetadata(
-                "Basic cancellation",
+                CancellationViewModel.name,
                 "hmm",
-                Cancellation/Detail
+                Cancellation/Detail/CancellationViewModel.name
             )
         )
 
         val exceptionHandlingCards = listOf(
             CardMetadata(
-                "Exposed",
+                ExposedAsyncTryCatchViewModel.name,
                 "Handles async exception with supervisorScope and try-catch",
-                ExceptionHandling/Detail
+                ExceptionHandling/Detail/ExposedAsyncTryCatchViewModel.name
             ),
             CardMetadata(
-                "Unhandled",
+                HandledLaunchCEHViewModel.name,
                 "Handles launch exception with CEH in direct child of supervisorScope",
-                ExceptionHandling/Detail
+                ExceptionHandling/Detail/HandledLaunchCEHViewModel.name
             ),
             CardMetadata(
-                "Unhandled async",
+                UnhandledAsyncCEHViewModel.name,
                 "Handles async silent exception but exception stops all children",
-                ExceptionHandling/Detail
+                ExceptionHandling/Detail/UnhandledAsyncCEHViewModel.name
             ),
             CardMetadata(
-                "Unhandled launch",
+                UnhandledLaunchCEHViewModel.name,
                 "Handles launch exception with CEH but exception stops all children",
-                ExceptionHandling/Detail
+                ExceptionHandling/Detail/UnhandledLaunchCEHViewModel.name
             )
         )
     }

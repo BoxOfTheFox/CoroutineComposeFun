@@ -19,7 +19,7 @@ fun CategoryGrid(
     onCardSelected: (String) -> Unit
 ){
     LazyColumn(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(cards) { item ->
