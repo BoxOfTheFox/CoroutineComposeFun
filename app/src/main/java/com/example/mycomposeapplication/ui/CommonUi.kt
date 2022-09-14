@@ -1,9 +1,6 @@
-package com.example.mycomposeapplication.ui.detail
+package com.example.mycomposeapplication.ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
@@ -15,38 +12,68 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mycomposeapplication.MainViewModel
+import com.example.mycomposeapplication.data.CardMetadata
+import com.example.mycomposeapplication.data.Example
 
 @Composable
-fun DetailScreen(title: String, viewModel: AbstractDetailViewModel = viewModel()) {
-    Scaffold { padding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .padding(16.dp)) {
+fun CategoryGrid(
+    modifier: Modifier = Modifier,
+    cards: List<CardMetadata>,
+    onCardSelected: (String) -> Unit
+){
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(cards) { item ->
+            CategoryCard(item, onCardSelected)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CategoryCard(
+    meta: CardMetadata,
+    onCardSelected: (String) -> Unit
+) {
+    Card(
+        elevation = 1.dp,
+        modifier = Modifier
+            .defaultMinSize(minHeight = 80.dp)
+            .fillMaxWidth(),
+        onClick = {
+            onCardSelected(meta.appDestination)
+        },
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
             Text(
-                text = title,
-                style = MaterialTheme.typography.h4
+                text = meta.title,
+                style = MaterialTheme.typography.h6,
+                maxLines = 1
             )
             Text(
-                text = ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(
-                    4
-                ),
-                modifier = Modifier.paddingFromBaseline(bottom = 12.dp)
+                text = meta.subtitle,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.paddingFromBaseline(28.dp),
+                maxLines = 2
             )
-            CoroutineTests(viewModel)
         }
     }
 }
 
 @Composable
-fun CoroutineTests(viewModel: AbstractDetailViewModel) {
+fun ExampleExecutor(example: Example, viewModel: MainViewModel = viewModel()) {
     var showFab by remember { mutableStateOf(true) }
     Scaffold(
         floatingActionButton = {
             if (showFab)
                 FloatingActionButton(onClick = {
                     showFab = false
-                    viewModel.execute()
+                    viewModel.execute(example)
                 }) {
                     Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "Start example")
                 }

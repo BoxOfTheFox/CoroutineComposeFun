@@ -1,71 +1,28 @@
-package com.example.mycomposeapplication.ui.detail
+package com.example.mycomposeapplication.data
 
 import android.util.Log
-import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 
-abstract class AbstractDetailViewModel: ViewModel() {
-    protected val _strList = listOf("").toMutableStateList()
-    val strList: List<String> = _strList
-
-    abstract fun execute()
+object ExceptionHandling: Navigation, Screen, Card, Parent {
+    override val shortDescription = "wip description"
+    override val route: String = this::class.java.simpleName
+    override val cards: List<Card> = listOf(HandledLaunchCEH, UnhandledLaunchCEH, UnhandledAsyncCEH, ExposedAsyncTryCatch)
+    override val title = route
+    override val description = ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(4)
 }
 
-class CancellationViewModel : AbstractDetailViewModel(){
-    override fun execute() {
-        _strList.clear()
-        viewModelScope.launch {
-            val job = launch {
-                try {
-                    wasteCpu()
-                } catch (e: CancellationException) {
-                    withContext(Dispatchers.Main) {
-                        _strList.add("yems")
-                        Log.e("cancellation", "yems")
-                    }
-                }
-            }
-            delay(1200)
-            withContext(Dispatchers.Main) {
-                _strList.add("main: I'm going to cancel this job")
-                Log.e("cancellation", "main: I'm going to cancel this job")
-            }
-            job.cancel()
-            withContext(Dispatchers.Main) {
-                _strList.add("main: Done")
-                Log.e("cancellation", "main: Done")
-            }
-        }
-    }
+/**
+ * Handles launch exception with CEH in direct child of supervisorScope
+ */
+object HandledLaunchCEH: Navigation, Screen, Card, Example {
+    override val shortDescription = "wip description"
+    override val title = "Handled"
+    override val description = ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(4)
+    override val route: String = this::class.java.simpleName
 
-    private suspend fun wasteCpu() = withContext(Dispatchers.Default) {
-        var nextPrintTime = System.currentTimeMillis()
-        while (isActive) {
-            if (System.currentTimeMillis() >= nextPrintTime) {
-                withContext(Dispatchers.Main) {
-                    _strList.add("job: I'm working…")
-                    Log.e("cancellation", "job: I'm working…")
-                }
-                nextPrintTime += 500
-            }
-        }
-    }
-
-    companion object {
-        const val name = "Basic cancellation"
-    }
-}
-
-class HandledLaunchCEHViewModel: AbstractDetailViewModel() {
-    /**
-     * Handles launch exception with CEH in direct child of supervisorScope
-     */
-    override fun execute() {
-        viewModelScope.launch{
-            _strList.clear()
-            _strList.add("Can't log in real time, will show logs when finished")
+    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+        scope.launch{
+            log("Can't log in real time, will show logs when finished")
             val dangerousWorkaround = mutableListOf<String>()
             delay(100)
             runBlocking {
@@ -97,23 +54,23 @@ class HandledLaunchCEHViewModel: AbstractDetailViewModel() {
                 Log.e("handledLaunchCEH", "Program ends")
                 dangerousWorkaround.add("Program ends")
             }
-            _strList.addAll(dangerousWorkaround)
+            dangerousWorkaround.forEach { log(it) }
         }
-    }
-
-    companion object {
-        const val name = "Handled"
     }
 }
 
-class UnhandledLaunchCEHViewModel: AbstractDetailViewModel(){
-    /**
-     * Handles launch exception with CEH but fail stops all children
-     */
-    override fun execute() {
-        viewModelScope.launch{
-            _strList.clear()
-            _strList.add("Can't log in real time, will show logs when finished")
+/**
+ * Handles launch exception with CEH but fail stops all children
+ */
+object UnhandledLaunchCEH: Navigation, Screen, Card, Example {
+    override val shortDescription = "wip description"
+    override val title = "Unhandled launch"
+    override val description = ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(4)
+    override val route: String = this::class.java.simpleName
+
+    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+        scope.launch{
+            log("Can't log in real time, will show logs when finished")
             val dangerousWorkaround = mutableListOf<String>()
             delay(100)
             runBlocking {
@@ -145,23 +102,24 @@ class UnhandledLaunchCEHViewModel: AbstractDetailViewModel(){
                 Log.e("unhandledLaunchCEH", "Program ends")
                 dangerousWorkaround.add("Program ends")
             }
-            _strList.addAll(dangerousWorkaround)
+            dangerousWorkaround.forEach { log(it) }
         }
-    }
-
-    companion object {
-        const val name = "Unhandled launch"
     }
 }
 
-class UnhandledAsyncCEHViewModel: AbstractDetailViewModel(){
-    /**
-     * Handles async silent exception but fail stops all children
-     */
-    override fun execute() {
-        viewModelScope.launch {
-            _strList.clear()
-            _strList.add("Can't log in real time, will show logs when finished")
+/**
+ * Handles async silent exception but fail stops all children
+ */
+object UnhandledAsyncCEH: Navigation, Screen, Card, Example {
+    override val shortDescription = "wip description"
+    override val title = "Unhandled async"
+    override val description =
+        ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(4)
+    override val route: String = this::class.java.simpleName
+
+    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+        scope.launch {
+            log("Can't log in real time, will show logs when finished")
             val dangerousWorkaround = mutableListOf<String>()
             delay(100)
             runBlocking {
@@ -194,23 +152,24 @@ class UnhandledAsyncCEHViewModel: AbstractDetailViewModel(){
                 Log.e("unhandledAsyncCEH", "Program ends")
                 dangerousWorkaround.add("Program ends")
             }
-            _strList.addAll(dangerousWorkaround)
+            dangerousWorkaround.forEach { log(it) }
         }
-    }
-
-    companion object {
-        const val name = "Unhandled async"
     }
 }
 
-class ExposedAsyncTryCatchViewModel: AbstractDetailViewModel() {
-    /**
-     * Handles exposed exception with supervisorScope and try-catch
-     */
-    override fun execute() {
-        viewModelScope.launch {
-            _strList.clear()
-            _strList.add("Can't log in real time, will show logs when finished")
+/**
+ * Handles exposed exception with supervisorScope and try-catch
+ */
+object ExposedAsyncTryCatch: Navigation, Screen, Card, Example {
+    override val shortDescription = "wip description"
+    override val title = "Exposed"
+    override val description =
+        ("Composem ipsum color sit lazy, padding theme elit, sed do bouncy.").repeat(4)
+    override val route: String = this::class.java.simpleName
+
+    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+        scope.launch {
+            log("Can't log in real time, will show logs when finished")
             val dangerousWorkaround = mutableListOf<String>()
             delay(100)
             runBlocking {
@@ -245,11 +204,7 @@ class ExposedAsyncTryCatchViewModel: AbstractDetailViewModel() {
                 Log.e("exposedAsyncTryCatch", "Program ends")
                 dangerousWorkaround.add("Program ends")
             }
-            _strList.addAll(dangerousWorkaround)
+            dangerousWorkaround.forEach { log(it) }
         }
-    }
-
-    companion object {
-        const val name = "Exposed"
     }
 }
