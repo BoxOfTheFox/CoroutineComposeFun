@@ -2,7 +2,7 @@ package com.example.mycomposeapplication.data
 
 object Main: Navigation, Screen, Parent {
     override val route: String = this::class.java.simpleName
-    override val cards: List<Card> = listOf(CoroutineConcepts, Cancellation, ExceptionHandling)
+    override val cards: List<Card> = listOf(CoroutineConcepts, StructuredConcurrency)
     override val title = "Compose and Coroutines Fun"
     override val description = """
         This application was created to learn basics of Compose and Coroutines.
