@@ -3,12 +3,14 @@ package com.example.mycomposeapplication
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.*
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mycomposeapplication.data.Main
-import com.example.mycomposeapplication.data.Parent
-import com.example.mycomposeapplication.data.Screen
+import androidx.navigation.navigation
+import com.example.mycomposeapplication.data.Card
+import com.example.mycomposeapplication.data.MainNode
+import com.example.mycomposeapplication.data.Node
 
 
 @Composable
@@ -18,21 +20,22 @@ fun AppNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Main.route,
+        startDestination = MainNode::class.java.name,
         modifier = modifier.fillMaxSize()
     ) {
-        composable(route = Main.route) {
-            MainScreen(Main) {
+        mainGraph(navController)
+    }
+}
+
+private fun NavGraphBuilder.mainGraph(navController: NavHostController) {
+    navigation(startDestination = "home", route = MainNode::class.java.name) {
+        composable(route = "home") {
+            MainScreen(MainNode) {
                 navController.navigate(it)
             }
         }
-        composable(
-            route = "${Main.route}/{chapter}?example={example}",
-            arguments = listOf(navArgument("example") { nullable = true })
-        ) {
-            val chapter = it.arguments?.getString("chapter")
-            val example = it.arguments?.getString("example")
-            chapter?.getScreen(example)?.let {
+        composable(route = "${MainNode::class.java.name}/{card}") {
+            it.arguments?.getString("card")?.let(MainNode::getCard)?.let {
                 MainScreen(it) {
                     navController.navigate(it)
                 }
@@ -41,11 +44,10 @@ fun AppNavHost(
     }
 }
 
-private fun String.getScreen(example: String?): Screen? {
-    val card = Main.cards.find { this == it.route }
-    return if (example != null && card is Parent) {
-        card.cards.find { it.route == example }
-    } else {
-        card
-    }
+private fun Card.getCard(name: String): Card? = when {
+    this::class.java.name == name -> this
+    this is Node -> cards.mapNotNull {
+        it.getCard(name)
+    }.firstOrNull()
+    else -> null
 }

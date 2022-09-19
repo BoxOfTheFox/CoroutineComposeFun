@@ -11,8 +11,6 @@ class MainViewModel : ViewModel() {
 
     fun execute(example: Example) {
         _strList.clear()
-        example.execute(viewModelScope) {
-            _strList.add(it)
-        }
+        example(viewModelScope, _strList::add)
     }
 }

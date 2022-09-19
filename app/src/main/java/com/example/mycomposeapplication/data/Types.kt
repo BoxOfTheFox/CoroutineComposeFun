@@ -2,29 +2,16 @@ package com.example.mycomposeapplication.data
 
 import kotlinx.coroutines.CoroutineScope
 
-interface Navigation {
-    val route: String
-}
-
-interface Parent: Navigation {
+interface Node {
     val cards: List<Card>
 }
 
-interface Screen {
+interface Example {
+    operator fun invoke(scope: CoroutineScope, log: (String) -> Unit)
+}
+
+interface Card {
     val title: String
     val description: String
-}
-
-interface Card: Screen, Navigation {
     val shortDescription: String
 }
-
-interface Example {
-    fun execute(scope: CoroutineScope, log: (String) -> Unit)
-}
-
-data class CardMetadata(
-    val title: String,
-    val subtitle: String,
-    val appDestination: String
-)

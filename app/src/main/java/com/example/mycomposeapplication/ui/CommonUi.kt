@@ -13,13 +13,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mycomposeapplication.MainViewModel
-import com.example.mycomposeapplication.data.CardMetadata
+import com.example.mycomposeapplication.data.Card
 import com.example.mycomposeapplication.data.Example
+import com.example.mycomposeapplication.data.MainNode
 
 @Composable
-fun CategoryGrid(
+fun CardGrid(
     modifier: Modifier = Modifier,
-    cards: List<CardMetadata>,
+    cards: List<Card>,
     onCardSelected: (String) -> Unit
 ){
     LazyColumn(
@@ -27,36 +28,37 @@ fun CategoryGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(cards) { item ->
-            CategoryCard(item, onCardSelected)
+            MainCard(card = item, onClick = onCardSelected)
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CategoryCard(
-    meta: CardMetadata,
-    onCardSelected: (String) -> Unit
+fun MainCard(
+    modifier: Modifier = Modifier,
+    card: Card,
+    onClick: (String) -> Unit
 ) {
     Card(
         elevation = 1.dp,
-        modifier = Modifier
+        modifier = modifier
             .defaultMinSize(minHeight = 80.dp)
             .fillMaxWidth(),
         onClick = {
-            onCardSelected(meta.appDestination)
+            onClick("${MainNode::class.java.name}/${card::class.java.name}")
         },
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = meta.title,
+                text = card.title,
                 style = MaterialTheme.typography.h6,
                 maxLines = 1
             )
             Text(
-                text = meta.subtitle,
+                text = card.shortDescription,
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.paddingFromBaseline(28.dp),
                 maxLines = 2
@@ -66,9 +68,14 @@ fun CategoryCard(
 }
 
 @Composable
-fun ExampleExecutor(example: Example, viewModel: MainViewModel = viewModel()) {
+fun ExampleCard(
+    modifier: Modifier = Modifier,
+    example: Example,
+    viewModel: MainViewModel = viewModel()
+) {
     var showFab by remember { mutableStateOf(true) }
     Scaffold(
+        modifier = modifier,
         floatingActionButton = {
             if (showFab)
                 FloatingActionButton(onClick = {

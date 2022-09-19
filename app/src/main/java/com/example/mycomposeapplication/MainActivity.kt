@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.mycomposeapplication.data.*
-import com.example.mycomposeapplication.ui.CategoryGrid
-import com.example.mycomposeapplication.ui.ExampleExecutor
+import com.example.mycomposeapplication.ui.CardGrid
+import com.example.mycomposeapplication.ui.ExampleCard
 import com.example.mycomposeapplication.ui.theme.MyComposeApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(
-    screen: Screen,
+    card: Card,
     onCardSelected: (String) -> Unit
 ) {
     Scaffold { padding ->
@@ -42,32 +42,21 @@ fun MainScreen(
             .padding(padding)
             .padding(16.dp)) {
             Text(
-                text = screen.title,
+                text = card.title,
                 style = MaterialTheme.typography.h4
             )
             Text(
-                text = screen.description,
+                text = card.description,
                 modifier = Modifier.paddingFromBaseline(bottom = 12.dp)
             )
-            if (screen is Parent)
-                CategoryGrid(
+            if (card is Node)
+                CardGrid(
                     modifier = Modifier.fillMaxSize(),
-                    cards = screen.mapToCardMetadataList(),
+                    cards = card.cards,
                     onCardSelected = onCardSelected
                 )
-            else if (screen is Example)
-                ExampleExecutor(screen)
+            else if (card is Example)
+                ExampleCard(example = card)
         }
     }
-}
-
-private fun Parent.mapToCardMetadataList() = cards.map {
-    CardMetadata(
-        it.title,
-        it.shortDescription,
-        if (it is Example)
-            "${Main.route}/$route?example=${it.route}"
-        else
-            "${Main.route}/${it.route}"
-    )
 }

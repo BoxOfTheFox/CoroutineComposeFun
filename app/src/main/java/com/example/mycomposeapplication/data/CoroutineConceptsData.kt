@@ -3,9 +3,8 @@ package com.example.mycomposeapplication.data
 import kotlinx.coroutines.*
 
 // todo figure out how to show Continuation
-object CoroutineConcepts: Navigation, Screen, Card, Parent {
+object CoroutineConcepts: Card, Node {
     override val shortDescription = "Blocks of code that can be dispatched to threads that are nonblocking"
-    override val route: String = this::class.java.simpleName
     override val cards: List<Card> = listOf(YourFirstCoroutine, AsyncCoroutineBuilder, CoroutineScopeAndContext, SuspendingFunction)
     override val title = "Coroutine Concepts"
     override val description = """
@@ -15,8 +14,7 @@ object CoroutineConcepts: Navigation, Screen, Card, Parent {
     """.trimIndent().replace('\n',' ')
 }
 
-object YourFirstCoroutine : Navigation, Screen, Card, Example {
-    override val route: String = this::class.java.simpleName
+object YourFirstCoroutine : Card, Example {
     override val title = "Your First Coroutine"
     override val description = """
         - The launch coroutine builder is "fire-and-forget" work - in other words, there is no result to return
@@ -25,7 +23,7 @@ object YourFirstCoroutine : Navigation, Screen, Card, Example {
     """.trimIndent()
     override val shortDescription = "Simple coroutine example"
 
-    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+    override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
             val job: Job = launch {
                 var i = 0
@@ -43,8 +41,7 @@ object YourFirstCoroutine : Navigation, Screen, Card, Example {
     }
 }
 
-object AsyncCoroutineBuilder : Navigation, Screen, Card, Example {
-    override val route: String = this::class.java.simpleName
+object AsyncCoroutineBuilder : Card, Example {
     override val title = "The async Coroutine Builder"
     override val description = """
         - The async coroutine builder is intended for parallel decomposition of work - that is, you explicitly specify that some tasks run concurrently
@@ -53,7 +50,7 @@ object AsyncCoroutineBuilder : Navigation, Screen, Card, Example {
     """.trimIndent()
     override val shortDescription = "The async coroutine builder can be compared to Java's Future/Promise model"
 
-    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+    override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
             val slow: Deferred<Int> = async {
                 log("Call for slow")
@@ -78,8 +75,7 @@ object AsyncCoroutineBuilder : Navigation, Screen, Card, Example {
     }
 }
 
-object CoroutineScopeAndContext : Navigation, Screen, Card, Example {
-    override val route: String = this::class.java.simpleName
+object CoroutineScopeAndContext : Card, Example {
     override val title = "Scope, Context and Dispatcher"
     override val description = "\tThe context of a newly created coroutine started with launch or async, " +
             "the coroutine context, inherits from the scope context and from the context passed in as " +
@@ -94,7 +90,7 @@ object CoroutineScopeAndContext : Navigation, Screen, Card, Example {
             "It's primarily used on the internals of the coroutines library"
     override val shortDescription = "Scope is a container for a Context, Dispatcher dispatches coroutines"
 
-    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+    override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
             launch(Dispatchers.Main) {
                 log("I'm executing in ${Thread.currentThread().name}")
@@ -106,15 +102,14 @@ object CoroutineScopeAndContext : Navigation, Screen, Card, Example {
     }
 }
 
-object SuspendingFunction : Navigation, Screen, Card, Example {
-    override val route: String = this::class.java.simpleName
+object SuspendingFunction : Card, Example {
     override val title = "Suspending Function"
     override val description = "A suspending function denotes a function which might not return " +
             "immediately. Using withContext and the appropriate Dispatcher, any blocking function " +
             "can be turned into nonblocking suspending function."
     override val shortDescription = "A suspending function denotes a function which might not return immediately"
 
-    override fun execute(scope: CoroutineScope, log: (String) -> Unit) {
+    override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
             val profile = fetchProfile("profileId", log)
             loadProfile(profile, log)

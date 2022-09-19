@@ -1,8 +1,6 @@
 package com.example.mycomposeapplication.data
 
-object Main: Navigation, Screen, Parent {
-    override val route: String = this::class.java.simpleName
-    override val cards: List<Card> = listOf(CoroutineConcepts, StructuredConcurrency)
+object MainNode: Card, Node {
     override val title = "Compose and Coroutines Fun"
     override val description = """
         This application was created to learn basics of Compose and Coroutines.
@@ -10,4 +8,6 @@ object Main: Navigation, Screen, Parent {
         see Compose possibilities. Coroutines examples and explanations are based on Programming Android with Kotlin
         - Achieving Structured Concurrency with Coroutines by Pierre-Olivier Laurence et al.
     """.trimIndent().replace('\n', ' ')
+    override val shortDescription = ""
+    override val cards: List<Card> = listOf(CoroutineConcepts, StructuredConcurrencyNode)
 }
