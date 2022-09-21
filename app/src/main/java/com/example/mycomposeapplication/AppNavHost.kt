@@ -46,8 +46,6 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController) {
 
 private fun Card.getCard(name: String): Card? = when {
     this::class.java.name == name -> this
-    this is Node -> cards.mapNotNull {
-        it.getCard(name)
-    }.firstOrNull()
+    this is Node -> cards.firstNotNullOfOrNull { it.getCard(name) }
     else -> null
 }
