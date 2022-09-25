@@ -1,5 +1,6 @@
 package com.example.mycomposeapplication.data
 
+import com.example.mycomposeapplication.R
 import kotlinx.coroutines.*
 
 // todo figure out how to show Continuation
@@ -22,6 +23,8 @@ object YourFirstCoroutine : Card, Example {
         - A coroutine that is started with launch will not return result, but rather, a reference to the background job
     """.trimIndent()
     override val shortDescription = "Simple coroutine example"
+
+    override val code = R.raw.your_first_coroutine
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -49,6 +52,7 @@ object AsyncCoroutineBuilder : Card, Example {
         - Very similarly to Futures and Promises, you invoke the await method on the Deferred instance to get the return value
     """.trimIndent()
     override val shortDescription = "The async coroutine builder can be compared to Java's Future/Promise model"
+    override val code = R.raw.async_coroutin_builder
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -89,6 +93,7 @@ object CoroutineScopeAndContext : Card, Example {
             "- Dispatchers.Unconfined - This isn't something you should use or even need as you're learning coroutines. " +
             "It's primarily used on the internals of the coroutines library"
     override val shortDescription = "Scope is a container for a Context, Dispatcher dispatches coroutines"
+    override val code = R.raw.coroutine_scope_and_context
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -108,6 +113,7 @@ object SuspendingFunction : Card, Example {
             "immediately. Using withContext and the appropriate Dispatcher, any blocking function " +
             "can be turned into nonblocking suspending function."
     override val shortDescription = "A suspending function denotes a function which might not return immediately"
+    override val code = R.raw.suspending_function
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {

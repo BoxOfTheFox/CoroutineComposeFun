@@ -1,5 +1,6 @@
 package com.example.mycomposeapplication.data
 
+import com.example.mycomposeapplication.R
 import kotlinx.coroutines.*
 
 object StructuredConcurrencyNode : Card, Node {
@@ -31,6 +32,7 @@ object BasicCancellationExample : Card, Example {
             "\tA coroutine always waits for its children to complete before completing itself. " +
             "So cancelling a coroutine also cancels all of its children."
     override val shortDescription = "A coroutine can be deliberately cancelled using cancel()"
+    override val code = R.raw.basic_cancellation
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -69,6 +71,7 @@ object CoroutineExceptionHandlerExample: Card, Example {
             "should create its own Job instance, as a CEH only takes effect when installed at " +
             "the top of a coroutine hierarchy."
     override val shortDescription = "Prevents the failure of scope to propagate to the main coroutine"
+    override val code = R.raw.coroutine_exception_handler
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -104,6 +107,7 @@ object SupervisorJobExample: Card, Example {
             "SupervisorJob is typically used as a drop-in replacement for Job when building a " +
             "CoroutineScope. The resulting scope is then called a \"supervisor scope\". Such a " +
             "scope propagates cancellation downward only. "
+    override val code = R.raw.supervisor_job
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -137,6 +141,7 @@ object SupervisorScopeExample: Card, Example {
             "coroutineScope, it waits for all children to complete. One crucial difference with " +
             "coroutineScope is that it only propagates cancellation downward, and cancels all " +
             "children only if it has failed itself."
+    override val code = R.raw.supervisor_scope
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -173,6 +178,7 @@ object ExposedExample: Card, Example {
             "\n\tWithout supervisorScope even if you don't call task2.await(), the program still " +
             "crashes because coroutineScope fails and exposes to its parent the exception that " +
             "caused failure. Then scope.launch treats this exception as unhandled."
+    override val code = R.raw.exposed
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {
@@ -222,6 +228,7 @@ object UnhandledExample: Card, Example {
             "do want to use CEH, there are a couple of things you should know. A CEH only works " +
             "when registered to:\n\t- launch (not async) when launch is root coroutine builder" +
             "\n\t- A scope\n\t- supervisorScope direct child"
+    override val code = R.raw.unhandled
 
     override fun invoke(scope: CoroutineScope, log: (String) -> Unit) {
         scope.launch {

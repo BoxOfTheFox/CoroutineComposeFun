@@ -1,8 +1,14 @@
 package com.example.mycomposeapplication.ui
 
+import android.os.Build
+import android.webkit.WebSettings
+import androidx.annotation.RawRes
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -16,6 +22,14 @@ import com.example.mycomposeapplication.MainViewModel
 import com.example.mycomposeapplication.data.Card
 import com.example.mycomposeapplication.data.Example
 import com.example.mycomposeapplication.data.MainNode
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.web.WebView
+import com.google.accompanist.web.rememberWebViewState
+import kotlinx.coroutines.launch
+import java.io.BufferedReader
 
 @Composable
 fun CardGrid(
@@ -75,7 +89,8 @@ fun ExampleCard(
 ) {
     var showFab by remember { mutableStateOf(true) }
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp),
         floatingActionButton = {
             if (showFab)
                 FloatingActionButton(onClick = {
@@ -103,6 +118,70 @@ fun ExampleCard(
                     )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun ExampleViewPager(description: String, @RawRes code: Int) {
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+    val pages = listOf("Description", "Code")
+    TabRow(
+        modifier = Modifier.padding(top = 4.dp),
+        selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+            )
+        }
+    ) {
+        pages.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(title) },
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.scrollToPage(index)
+                    }
+                },
+            )
+        }
+    }
+
+    HorizontalPager(
+        modifier = Modifier.fillMaxHeight(0.4f),
+        count = pages.size,
+        state = pagerState,
+    ) { page ->
+        if (page == 0) {
+            Text(
+                text = description,
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 4.dp)
+                    .padding(horizontal = 16.dp)
+            )
+        } else {
+            val isDarkMode = isSystemInDarkTheme()
+            WebView(
+                state = rememberWebViewState(url = ""),
+                onCreated = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && it.isForceDarkAllowed && isDarkMode) {
+                        it.settings.forceDark = WebSettings.FORCE_DARK_ON
+                    }
+                    it.loadData(
+                        it.resources
+                            .openRawResource(code)
+                            .bufferedReader()
+                            .use(BufferedReader::readText),
+                        "text/html; charset=utf-8",
+                        "UTF-8"
+                    )
+                },
+                captureBackPresses = false
+            )
         }
     }
 }

@@ -7,6 +7,7 @@ interface Node {
 }
 
 interface Example {
+    val code: Int
     operator fun invoke(scope: CoroutineScope, log: (String) -> Unit)
 }
 
