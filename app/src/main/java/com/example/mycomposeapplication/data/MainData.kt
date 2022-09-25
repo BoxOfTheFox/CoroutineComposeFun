@@ -9,5 +9,5 @@ object MainNode: Card, Node {
         - Achieving Structured Concurrency with Coroutines by Pierre-Olivier Laurence et al.
     """.trimIndent().replace('\n', ' ')
     override val shortDescription = ""
-    override val cards: List<Card> = listOf(CoroutineConcepts, StructuredConcurrencyNode)
+    override val cards: List<Card> = listOf(CoroutineConcepts, StructuredConcurrencyNode, ChannelsNode)
 }

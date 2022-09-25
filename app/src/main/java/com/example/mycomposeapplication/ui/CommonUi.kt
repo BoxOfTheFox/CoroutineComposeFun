@@ -109,6 +109,7 @@ fun ExampleCard(
                 .padding(padding),
             shape = MaterialTheme.shapes.medium,
         ) {
+            // todo scroll to bottom
             LazyColumn(modifier = Modifier.padding(8.dp)) {
                 items(items = viewModel.strList) { str ->
                     Text(
