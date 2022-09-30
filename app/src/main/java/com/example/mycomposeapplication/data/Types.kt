@@ -13,6 +13,6 @@ interface Example {
 
 interface Card {
     val title: String
-    val description: String
     val shortDescription: String
+    val description: String
 }
